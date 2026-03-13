@@ -254,6 +254,22 @@ echo "Hello" | opendev -p "Respond with OK"
 
 ## Troubleshooting
 
+### "Header of type `authorization` was missing"
+
+**Cause:** Windows-style line endings (CRLF) in `~/.opendev/.env` file.
+
+**Fix:**
+```bash
+sed -i 's/\r$//' ~/.opendev/.env
+```
+
+Then restart your shell or re-source the file:
+```bash
+source ~/.opendev/.env
+```
+
+**Prevention:** Create `.env` files with Unix line endings (LF only).
+
 ### "HTTP 400" or "context_length_exceeded"
 
 - **Cause**: Model's context window exceeded
