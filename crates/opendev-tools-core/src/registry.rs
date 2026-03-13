@@ -10,29 +10,33 @@ use crate::normalizer;
 use crate::traits::{BaseTool, ToolContext, ToolResult};
 
 /// Registry that maps tool names to implementations and dispatches execution.
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone)]
 pub struct ToolRegistry {
-    tools: HashMap<String, Arc<dyn BaseTool>>,
+    tools: Arc<HashMap<String, Arc<dyn BaseTool>>>,
 }
 
 impl ToolRegistry {
     /// Create an empty registry.
     pub fn new() -> Self {
         Self {
-            tools: HashMap::new(),
+            tools: Arc::new(HashMap::new()),
         }
     }
 
     /// Register a tool. Replaces any existing tool with the same name.
+    /// NOTE: This requires Arc::make_mut which clones the HashMap if there are multiple references.
     pub fn register(&mut self, tool: Arc<dyn BaseTool>) {
         let name = tool.name().to_string();
         info!(tool = %name, "Registered tool");
-        self.tools.insert(name, tool);
+        // Use Arc::make_mut to get mutable access, cloning if needed
+        let tools_mut = Arc::make_mut(&mut self.tools);
+        tools_mut.insert(name, tool);
     }
 
     /// Unregister a tool by name. Returns the tool if it existed.
     pub fn unregister(&mut self, name: &str) -> Option<Arc<dyn BaseTool>> {
-        self.tools.remove(name)
+        let tools_mut = Arc::make_mut(&mut self.tools);
+        tools_mut.remove(name)
     }
 
     /// Look up a tool by name.

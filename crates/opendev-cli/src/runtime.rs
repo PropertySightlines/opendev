@@ -40,13 +40,13 @@ pub struct AgentRuntime {
     /// Session manager for conversation persistence.
     pub session_manager: SessionManager,
     /// Tool registry with all available tools.
-    pub tool_registry: ToolRegistry,
+    pub tool_registry: Arc<ToolRegistry>,
     /// Handler middleware for pre/post tool processing.
     pub handler_registry: HandlerRegistry,
     /// Query enhancer for @ file injection and message preparation.
     pub query_enhancer: QueryEnhancer,
     /// HTTP client for LLM API calls (with provider adapter).
-    pub http_client: AdaptedClient,
+    pub http_client: Arc<AdaptedClient>,
     /// LLM caller configuration.
     pub llm_caller: LlmCaller,
     /// ReAct loop.
@@ -267,10 +267,10 @@ impl AgentRuntime {
         let raw_http_client = HttpClient::new(api_url, headers, None)
             .map_err(|e| format!("Failed to create HTTP client: {e}"))?;
 
-        let http_client = match adapter {
+        let http_client = Arc::new(match adapter {
             Some(a) => AdaptedClient::with_adapter(raw_http_client, a),
             None => AdaptedClient::new(raw_http_client),
-        };
+        });
 
         // Check if model supports temperature via models.dev metadata
         let supports_temperature = {
@@ -314,6 +314,22 @@ impl AgentRuntime {
 
         let cost_tracker = CostTracker::new();
 
+        // Register SpawnSubagentTool now that we have http_client
+        // Must happen BEFORE wrapping tool_registry in Arc
+        use opendev_agents::subagents::SubagentManager;
+        let subagent_manager = Arc::new(SubagentManager::new());
+        let spawn_subagent = SpawnSubagentTool::new(
+            subagent_manager,
+            Arc::new(tool_registry.clone()),
+            http_client.clone(),  // http_client is already Arc<AdaptedClient>
+            config.model.clone(),
+            working_dir.display().to_string(),
+        );
+        tool_registry.register(Arc::new(spawn_subagent));
+
+        // Wrap tool_registry in Arc for sharing
+        let tool_registry = Arc::new(tool_registry);
+
         Ok(Self {
             config,
             working_dir: working_dir.to_path_buf(),
@@ -321,7 +337,7 @@ impl AgentRuntime {
             tool_registry,
             handler_registry,
             query_enhancer,
-            http_client,
+            http_client,  // Already Arc<AdaptedClient>
             llm_caller,
             react_loop,
             cost_tracker,
