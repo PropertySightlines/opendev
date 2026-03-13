@@ -226,6 +226,8 @@ impl AgentRuntime {
                     "mistral" => "https://api.mistral.ai/v1/chat/completions",
                     "deepinfra" => "https://api.deepinfra.com/v1/openai/chat/completions",
                     "openrouter" => "https://openrouter.ai/api/v1/chat/completions",
+                    "nvidia" => "https://integrate.api.nvidia.com/v1/chat/completions",
+                    "cerebras" => "https://api.cerebras.ai/v1/chat/completions",
                     _ => {
                         // Custom provider: use api_base_url or default to OpenAI
                         ""
@@ -281,6 +283,22 @@ impl AgentRuntime {
                 .unwrap_or(true)
         };
 
+        // Adjust max_tokens for providers with smaller context windows
+        // Cerebras llama3.1-8b has 8192 context limit; with large system prompts + tools,
+        // we need to reserve ~6000 tokens for input, leaving ~2000 for completion
+        // For Cerebras, we recommend using qwen-3-235b-a22b-instruct-2507 (131K context) instead
+        let effective_max_tokens = if config.model_provider == "cerebras"
+            && config.model.starts_with("llama3.1-8b")
+        {
+            2048
+        } else if config.model_provider == "cerebras"
+            && config.model.starts_with("qwen-3-235b")
+        {
+            config.max_tokens as u64  // Full tokens - Qwen has 131K context
+        } else {
+            config.max_tokens as u64
+        };
+
         // Configure LLM caller
         let llm_caller = LlmCaller::new(LlmCallConfig {
             model: config.model.clone(),
@@ -289,7 +307,7 @@ impl AgentRuntime {
             } else {
                 None
             },
-            max_tokens: Some(config.max_tokens as u64),
+            max_tokens: Some(effective_max_tokens),
         });
 
         let react_loop = ReactLoop::new(ReactLoopConfig::default());

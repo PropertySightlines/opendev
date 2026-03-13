@@ -80,6 +80,47 @@ All of these follow the same pattern -- export the env var and set the provider 
 - **DeepInfra** -- `DEEPINFRA_API_KEY`, provider ID `deepinfra`
 - **OpenRouter** -- `OPENROUTER_API_KEY`, provider ID `openrouter`
 - **Azure OpenAI** -- `AZURE_OPENAI_API_KEY`, provider ID `azure`
+- **Nvidia** -- `NVIDIA_API_KEY`, provider ID `nvidia`
+- **Cerebras** -- `CEREBRAS_API_KEY`, provider ID `cerebras`
+
+### Nvidia
+
+- Env var: `NVIDIA_API_KEY`
+- Provider ID: `nvidia`
+- API URL: `https://integrate.api.nvidia.com/v1/chat/completions`
+- Get API key: https://build.nvidia.com/models
+
+```bash
+export NVIDIA_API_KEY="nvapi-..."
+```
+
+### Cerebras
+
+- Env var: `CEREBRAS_API_KEY`
+- Provider ID: `cerebras`
+- API URL: `https://api.cerebras.ai/v1/chat/completions`
+- Free tier: **1M tokens/day** (no credit card required)
+- Get API key: https://cloud.cerebras.ai/
+
+**Recommended Models:**
+
+| Model ID | Context | Notes |
+|----------|---------|-------|
+| `qwen-3-235b-a22b-instruct-2507` | 131K | ✅ **Recommended** - Full context, works with OpenDev's system prompts |
+| `llama3.1-8b` | 8K | ⚠️ Limited context - may require system prompt truncation |
+
+```bash
+export CEREBRAS_API_KEY="..."
+```
+
+**Example Configuration:**
+```json
+{
+  "model_provider": "cerebras",
+  "model": "qwen-3-235b-a22b-instruct-2507",
+  "max_tokens": 4096
+}
+```
 
 ## Workflow Model Binding
 

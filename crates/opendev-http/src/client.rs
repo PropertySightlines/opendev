@@ -173,6 +173,12 @@ impl HttpClient {
                 }
                 let body = resp.json::<serde_json::Value>().await?;
                 if status >= 400 {
+                    // DEBUG: Log full error response for debugging
+                    tracing::error!(
+                        status,
+                        body = %serde_json::to_string(&body).unwrap_or_else(|_| "{}".to_string()),
+                        "DEBUG: API error response"
+                    );
                     let error_msg = body
                         .get("error")
                         .and_then(|e| e.get("message"))

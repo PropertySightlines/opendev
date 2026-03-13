@@ -24,6 +24,9 @@ const PRIORITY_PROVIDERS: &[&str] = &[
     "perplexity",
     "togetherai",
     "together",
+    "nvidia",
+    "cerebras",
+    "openrouter",
 ];
 
 #[derive(Debug, Error)]

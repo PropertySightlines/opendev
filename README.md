@@ -82,7 +82,7 @@ See the [Provider Setup Guide](docs/providers.md) for all 9 supported providers,
 
 ### Multi-Provider Support
 
-OpenDev supports 9 LLM providers: **OpenAI**, **Anthropic**, **Fireworks**, **Google**, **Groq**, **Mistral**, **DeepInfra**, **OpenRouter**, and **Azure OpenAI**.
+OpenDev supports 11 LLM providers: **OpenAI**, **Anthropic**, **Fireworks**, **Google**, **Groq**, **Mistral**, **DeepInfra**, **OpenRouter**, **Azure OpenAI**, **Nvidia**, and **Cerebras**.
 
 Each provider's models can be independently assigned to 5 workflow slots:
 

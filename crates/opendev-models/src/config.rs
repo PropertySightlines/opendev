@@ -452,6 +452,8 @@ impl AppConfig {
             "mistral" => "MISTRAL_API_KEY",
             "deepinfra" => "DEEPINFRA_API_KEY",
             "openrouter" => "OPENROUTER_API_KEY",
+            "nvidia" => "NVIDIA_API_KEY",
+            "cerebras" => "CEREBRAS_API_KEY",
             _ => "OPENAI_API_KEY",
         };
 
