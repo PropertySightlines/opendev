@@ -24,26 +24,21 @@ This branch adds support for **11 LLM providers** (up from 9), including:
 
 ## Current Status & Known Working Models
 
-**Tested and Verified:**
-- ✅ NVIDIA: `moonshotai/kimi-k2-instruct` (Normal slot)
-- ✅ Cerebras: `qwen-3-235b-a22b-instruct-2507` (Compact slot)
-- ✅ Groq: `llama-3.3-70b-versatile` (Critique slot)
+**Tested and Verified (as of March 2026):**
+
+| Slot | Provider | Model | Status | Notes |
+|------|----------|-------|--------|-------|
+| **Normal** | NVIDIA | `moonshotai/kimi-k2-instruct` | ✅ Working | Excellent for coding and tool use |
+| **Thinking** | NVIDIA | `z-ai/glm5` | ✅ Working | Strong reasoning, ~20-30s response time |
+| **Thinking (alt)** | NVIDIA | `meta/llama-3.3-70b-instruct` | ✅ Working | Faster than glm5, good reasoning |
+| **Compact** | Cerebras | `qwen-3-235b-a22b-instruct-2507` | ✅ Working | 131K context, fast summarization |
+| **Critique** | Groq | `llama-3.3-70b-versatile` | ✅ Working | Ultra-low latency (~400 tok/s) |
+| **VLM** | NVIDIA | `Llama-3.2-90B-Vision-Instruct` | ⚠️ Untested | Standard vision model |
 
 **Notes:**
 - `deepseek-ai/deepseek-r1` is deprecated (ended 2026-01-26)
 - `gpt-oss-120b` on Cerebras may not be available on all accounts
-- Thinking models (like `kimi-k2-thinking`) return reasoning_content instead of content - OpenDev may need updates to handle this format
-
-**Recommended Simple Configuration (start here):**
-```json
-{
-  "model_provider": "nvidia",
-  "model": "moonshotai/kimi-k2-instruct",
-  "max_tokens": 4096
-}
-```
-
-Once confirmed working, expand to multi-provider.
+- Thinking models add latency but improve plan quality
 
 OpenDev's compound AI architecture allows you to bind different models to different workflow slots. Here's the recommended configuration:
 
@@ -85,7 +80,7 @@ Create `~/.opendev/settings.json`:
   "model": "moonshotai/kimi-k2-instruct",
   
   "model_thinking_provider": "nvidia",
-  "model_thinking": "moonshotai/kimi-k2-thinking",
+  "model_thinking": "z-ai/glm5",
   
   "model_compact_provider": "cerebras",
   "model_compact": "qwen-3-235b-a22b-instruct-2507",
