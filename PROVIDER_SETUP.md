@@ -30,8 +30,8 @@ OpenDev's compound AI architecture allows you to bind different models to differ
 
 | Slot | Provider | Model | Context | Why |
 |------|----------|-------|---------|-----|
-| **Normal** | NVIDIA | `kimi-k2.5` | 256K | Excellent tool use, coding, agentic capabilities |
-| **Thinking** | NVIDIA | `deepseek-ai/deepseek-r1` | 128K+ | State-of-the-art reasoning and planning |
+| **Normal** | NVIDIA | `moonshotai/kimi-k2-instruct` | 256K | Excellent tool use, coding, agentic capabilities |
+| **Thinking** | NVIDIA | `moonshotai/kimi-k2-thinking` | 256K | Deep reasoning and planning (thinking model) |
 | **Compact** | Cerebras | `qwen-3-235b-a22b-instruct-2507` | 131K | High-quality summarization (131K context) |
 | **Critique** | Groq | `llama-3.3-70b-versatile` | 128K | Ultra-low latency analysis (~400 tok/s) |
 | **VLM** | NVIDIA | `Llama-3.2-90B-Vision-Instruct` | - | Native vision understanding |
@@ -61,10 +61,10 @@ Create `~/.opendev/settings.json`:
 ```json
 {
   "model_provider": "nvidia",
-  "model": "kimi-k2.5",
+  "model": "moonshotai/kimi-k2-instruct",
   
   "model_thinking_provider": "nvidia",
-  "model_thinking": "deepseek-ai/deepseek-r1",
+  "model_thinking": "moonshotai/kimi-k2-thinking",
   
   "model_compact_provider": "cerebras",
   "model_compact": "qwen-3-235b-a22b-instruct-2507",
@@ -111,11 +111,11 @@ Create `~/.opendev/settings.json`:
 ### Quick Test
 
 ```bash
-# Test Normal slot (NVIDIA Kimi K2.5)
+# Test Normal slot (NVIDIA Kimi K2 Instruct)
 export NVIDIA_API_KEY="nvapi-..."
 opendev -p "Explain what this code does: $(cat some_file.py)"
 
-# Test Thinking slot (NVIDIA DeepSeek R1)
+# Test Thinking slot (NVIDIA Kimi K2 Thinking)
 opendev -p "Plan how to add authentication to this Flask app"
 
 # Test Compact slot (Cerebras Qwen 3 235B)
