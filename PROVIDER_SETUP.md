@@ -110,9 +110,10 @@ Create `~/.opendev/settings.json`:
 1. Visit: https://cloud.cerebras.ai/
 2. Sign up (no credit card required)
 3. Generate API key
-4. Free tier: 1M tokens/day
+4. Free tier: 1M tokens/day, **64K context** (131K on paid tier)
 
 **Note:** Use `qwen-3-235b-a22b-instruct-2507` for the Compact slot. The `gpt-oss-120b` model may not be available on all accounts.
+**Important:** Free tier has 64K context limit - not suitable for very long conversation compaction. Best for Critique slot (short analysis tasks).
 
 ### Groq
 1. Visit: https://console.groq.com/
