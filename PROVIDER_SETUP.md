@@ -32,7 +32,7 @@ OpenDev's compound AI architecture allows you to bind different models to differ
 |------|----------|-------|---------|-----|
 | **Normal** | NVIDIA | `kimi-k2.5` | 256K | Excellent tool use, coding, agentic capabilities |
 | **Thinking** | NVIDIA | `deepseek-ai/deepseek-r1` | 128K+ | State-of-the-art reasoning and planning |
-| **Compact** | Cerebras | `gpt-oss-120b` | 131K | World's fastest inference (~3000 tok/s) |
+| **Compact** | Cerebras | `qwen-3-235b-a22b-instruct-2507` | 131K | High-quality summarization (131K context) |
 | **Critique** | Groq | `llama-3.3-70b-versatile` | 128K | Ultra-low latency analysis (~400 tok/s) |
 | **VLM** | NVIDIA | `Llama-3.2-90B-Vision-Instruct` | - | Native vision understanding |
 
@@ -67,7 +67,7 @@ Create `~/.opendev/settings.json`:
   "model_thinking": "deepseek-ai/deepseek-r1",
   
   "model_compact_provider": "cerebras",
-  "model_compact": "gpt-oss-120b",
+  "model_compact": "qwen-3-235b-a22b-instruct-2507",
   
   "model_critique_provider": "groq",
   "model_critique": "llama-3.3-70b-versatile",
@@ -96,6 +96,8 @@ Create `~/.opendev/settings.json`:
 3. Generate API key
 4. Free tier: 1M tokens/day
 
+**Note:** Use `qwen-3-235b-a22b-instruct-2507` for the Compact slot. The `gpt-oss-120b` model may not be available on all accounts.
+
 ### Groq
 1. Visit: https://console.groq.com/
 2. Sign up (no credit card required)
@@ -116,7 +118,7 @@ opendev -p "Explain what this code does: $(cat some_file.py)"
 # Test Thinking slot (NVIDIA DeepSeek R1)
 opendev -p "Plan how to add authentication to this Flask app"
 
-# Test Compact slot (Cerebras gpt-oss-120b)
+# Test Compact slot (Cerebras Qwen 3 235B)
 # Automatically triggered when context gets long
 
 # Test Critique slot (Groq Llama 3.3)
@@ -174,6 +176,17 @@ To replicate this setup on another computer:
    export NVIDIA_API_KEY="nvapi-..."
    export CEREBRAS_API_KEY="csk-..."
    export GROQ_API_KEY="gsk_..."
+   ```
+
+   **Alternative:** Copy the `.env` file to `~/.opendev/.env` and source it:
+   ```bash
+   cp .env ~/.opendev/.env
+   source ~/.opendev/.env  # Run once per shell session
+   ```
+
+   Or add to your `~/.bashrc` or `~/.zshrc`:
+   ```bash
+   source ~/.opendev/.env  # Auto-load on shell startup
    ```
 
 ### Setup Script
