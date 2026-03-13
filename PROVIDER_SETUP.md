@@ -22,7 +22,28 @@ This branch adds support for **11 LLM providers** (up from 9), including:
 
 ---
 
-## Recommended Multi-Provider Configuration
+## Current Status & Known Working Models
+
+**Tested and Verified:**
+- ✅ NVIDIA: `moonshotai/kimi-k2-instruct` (Normal slot)
+- ✅ Cerebras: `qwen-3-235b-a22b-instruct-2507` (Compact slot)
+- ✅ Groq: `llama-3.3-70b-versatile` (Critique slot)
+
+**Notes:**
+- `deepseek-ai/deepseek-r1` is deprecated (ended 2026-01-26)
+- `gpt-oss-120b` on Cerebras may not be available on all accounts
+- Thinking models (like `kimi-k2-thinking`) return reasoning_content instead of content - OpenDev may need updates to handle this format
+
+**Recommended Simple Configuration (start here):**
+```json
+{
+  "model_provider": "nvidia",
+  "model": "moonshotai/kimi-k2-instruct",
+  "max_tokens": 4096
+}
+```
+
+Once confirmed working, expand to multi-provider.
 
 OpenDev's compound AI architecture allows you to bind different models to different workflow slots. Here's the recommended configuration:
 
