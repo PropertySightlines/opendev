@@ -316,10 +316,18 @@ impl AgentRuntime {
 
         // Register SpawnSubagentTool now that we have http_client
         // Must happen BEFORE wrapping tool_registry in Arc
-        use opendev_agents::subagents::SubagentManager;
-        let subagent_manager = Arc::new(SubagentManager::new());
+        use opendev_agents::subagents::{SubagentManager, builtins};
+        let mut subagent_manager = SubagentManager::new();
+        
+        // Register built-in subagents
+        subagent_manager.register(builtins::code_explorer("You are a code exploration specialist."));
+        subagent_manager.register(builtins::planner("You are a planning specialist."));
+        subagent_manager.register(builtins::ask_user("You are a user interaction specialist."));
+        subagent_manager.register(builtins::web_clone("You are a web cloning specialist."));
+        subagent_manager.register(builtins::web_generator("You are a web generation specialist."));
+        
         let spawn_subagent = SpawnSubagentTool::new(
-            subagent_manager,
+            Arc::new(subagent_manager),
             Arc::new(tool_registry.clone()),
             http_client.clone(),  // http_client is already Arc<AdaptedClient>
             config.model.clone(),
